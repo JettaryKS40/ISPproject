@@ -29,10 +29,6 @@ var Player = cc.Sprite.extend({
              this.setPosition( new cc.Point( pos.x - 10 , pos.y ) );
         }
 
-        if ( this.directionSet == 87 && this.directionSet == 68 ) {
-             this.setPosition( new cc.Point( pos.x + 10 , pos.y + 10 ) );
-        }
-
     },
 
     move: function( direction ) {
