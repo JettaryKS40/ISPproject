@@ -42,16 +42,10 @@ var GameLayer = cc.LayerColor.extend({
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        this.player.scheduleUpdate();
-        this.enemy.scheduleUpdate();
-        this.bonusEnemy.scheduleUpdate();
-        this.boss.scheduleUpdate();
-
         this.addKeyboardHandlers();
-
         this.scheduleUpdate();
-
         return true;
+
     },
 
     onKeyDown: function( keyCode, event ) {

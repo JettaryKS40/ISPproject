@@ -5,11 +5,4 @@ var Enemy1 = cc.Sprite.extend({
 
     },
 
-    update: function( dt ) {
-      var pos = this.getPosition();
-
-        this.setPosition( new cc.Point( pos.x, pos.y - 5 ) );
-
-    }
-
 });
