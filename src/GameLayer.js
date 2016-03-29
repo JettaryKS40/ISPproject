@@ -15,15 +15,15 @@ var GameLayer = cc.LayerColor.extend({
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         this.enemy = new Enemy1();
-        this.enemy.setPosition( new cc.Point( screenWidth - 200, screenHeight ) );
+        this.enemy.setPosition( new cc.Point( screenWidth - 200, screenHeight - 200 ) );
         this.addChild( this.enemy );
 
         this.bonusEnemy = new Enemy2();
-        this.bonusEnemy.setPosition( new cc.Point( screenWidth / 2, screenHeight ) );
+        this.bonusEnemy.setPosition( new cc.Point( screenWidth / 2, screenHeight - 200 ) );
         this.addChild( this.bonusEnemy );
 
         this.boss = new Enemy3();
-        this.boss.setPosition( new cc.Point( screenWidth / 3, screenHeight ) );
+        this.boss.setPosition( new cc.Point( screenWidth / 3, screenHeight - 200 ) );
         this.addChild( this.boss );
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +42,7 @@ var GameLayer = cc.LayerColor.extend({
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        this.player.scheduleUpdate();
         this.addKeyboardHandlers();
         this.scheduleUpdate();
         return true;
