@@ -14,31 +14,10 @@ var GameLayer = cc.LayerColor.extend({
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        this.enemy = new Enemy1();
-        this.enemy.setPosition( new cc.Point( screenWidth - 200, screenHeight - 200 ) );
-        this.addChild( this.enemy );
-
-        this.bonusEnemy = new Enemy2();
-        this.bonusEnemy.setPosition( new cc.Point( screenWidth / 2, screenHeight - 200 ) );
-        this.addChild( this.bonusEnemy );
-
-        this.boss = new Enemy3();
-        this.boss.setPosition( new cc.Point( screenWidth / 3, screenHeight - 200 ) );
-        this.addChild( this.boss );
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        this.roadblock1 = new Cover();
-        this.roadblock1.setPosition( new cc.Point( 250 , screenHeight / 3 ) );
-        this.addChild( this.roadblock1 );
 
-        this.roadblock2 = new Cover();
-        this.roadblock2.setPosition( new cc.Point( 500 , screenHeight / 3 ) );
-        this.addChild( this.roadblock2 );
-
-        this.roadblock3 = new Cover();
-        this.roadblock3.setPosition( new cc.Point( 750 , screenHeight / 3 ) );
-        this.addChild( this.roadblock3 );
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

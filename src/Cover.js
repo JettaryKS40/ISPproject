@@ -8,4 +8,8 @@ var Cover = cc.Sprite.extend({
 
     },
 
+    shooting: function( dt ) {
+
+    },
+
 });
