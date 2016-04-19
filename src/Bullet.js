@@ -20,12 +20,12 @@ var Bullet = cc.Sprite.extend({
         var pos = this.getPosition();
 
         if ( this.checkOne == 1 ) {
-             pos.x += 20;
+             pos.x += 50;
              this.setPosition ( new cc.Point ( pos.x , pos.y ) );
         }
 
         if ( this.checkTwo == 1 ) {
-             pos.x -= 20;
+             pos.x -= 15;
              this.setPosition ( new cc.Point ( pos.x , pos.y ) );
         }
 

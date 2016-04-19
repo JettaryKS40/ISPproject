@@ -19,7 +19,9 @@ var GameLayer = cc.LayerColor.extend({
         this.enemy3 = new Enemy1();
         this.enemy3.randomPos();
         this.addChild( this.enemy3, 1);
+
         this.playerBullet = new Bullet();
+        this.countBullet = 0;
         this.grassbg = new Background();
         this.grassbg.setPosition( new cc.Point( screenWidth / 2, screenHeight / 2 ) );
         this.addChild( this.grassbg );
@@ -47,7 +49,9 @@ var GameLayer = cc.LayerColor.extend({
         }
 
         if ( keyCode == cc.KEY.d ) {
-             this.shoot();
+             if( this.countBullet == 0 )
+                 this.shoot();
+                 this.countBullet = 1;
         }
 
     },
@@ -84,6 +88,10 @@ var GameLayer = cc.LayerColor.extend({
 
             if( this.player.hit ( this.playerBullet, this.enemy3 ) )
                 this.enemy3.randomPos();
+
+            if( this.countBullet == 1 )
+                if( this.playerBullet.getPositionX() > 1024 )
+                    this.countBullet = 0;
 
 
     },
