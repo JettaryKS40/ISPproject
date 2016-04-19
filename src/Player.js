@@ -14,20 +14,17 @@ var Player = cc.Sprite.extend({
         var pos = this.getPosition();
 
         if ( this.directionSet == 87 ) {
-             this.setPosition( new cc.Point( pos.x , pos.y + 10 ) );
-        }
-
-        if ( this.directionSet == 68 ) {
-             this.setPosition( new cc.Point( pos.x + 10 , pos.y ) );
+             if ( pos.y < 650) {
+                  this.setPosition( new cc.Point( pos.x , pos.y + 10 ) );
+             }
         }
 
         if ( this.directionSet == 83 ) {
-             this.setPosition( new cc.Point( pos.x , pos.y - 10 ) );
+             if ( pos.y > 150) {
+                  this.setPosition( new cc.Point( pos.x , pos.y - 10 ) );
+             }
         }
 
-        if ( this.directionSet == 65 ) {
-             this.setPosition( new cc.Point( pos.x - 10 , pos.y ) );
-        }
 
     },
 
@@ -43,6 +40,12 @@ var Player = cc.Sprite.extend({
 
     endGame: function() {
 	      this.started = false;
+    },
+
+    hit: function( bullet , person ) {
+        var bulletPos = bullet.getPosition();
+        var PersonPos = person.getPosition();
+        return ( ( Math.abs( bulletPos.x - PersonPos.x ) <= 50 ) && ( Math.abs( bulletPos.y - PersonPos.y ) <= 50 ) );
     }
 
 });

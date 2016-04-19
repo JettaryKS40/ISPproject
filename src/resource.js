@@ -4,10 +4,11 @@ var res = {
     player_png: 'res/images/player.png',
 
     enemy1_png: 'res/images/enemy1.png',
-    enemy2_png: 'res/images/enemy2.png',
-    enemy3_png: 'res/images/enemy3.png',
 
-    roadblock_png: 'res/images/sandbag.png'
+    roadblock_png: 'res/images/sandbag.png',
+
+    bullet_png: 'res/images/bullet.png'
+
     // damageSandbag1_png: 'res/images/damageSandbag1.png',
     // damageSandbag2_png: 'res/images/damageSandbag2.png',
     //

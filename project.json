@@ -17,9 +17,8 @@
         "src/GameLayer.js",
         "src/Background.js",
         "src/Enemy1.js",
-        "src/Enemy2.js",
-        "src/Enemy3.js",
         "src/Player.js",
+        "src/Bullet.js",
         "src/Cover.js"
 
     ]
