@@ -19,6 +19,7 @@
         "src/Enemy1.js",
         "src/Player.js",
         "src/Bullet.js",
+        "src/EnemyBullet.js",
         "src/Cover.js"
 
     ]

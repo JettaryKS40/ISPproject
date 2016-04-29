@@ -20,7 +20,7 @@ var Player = cc.Sprite.extend({
         }
 
         if ( this.directionSet == 83 ) {
-             if ( pos.y > 150) {
+             if ( pos.y > 100) {
                   this.setPosition( new cc.Point( pos.x , pos.y - 10 ) );
              }
         }
@@ -45,14 +45,7 @@ var Player = cc.Sprite.extend({
     hit: function( bullet , person ) {
         var bulletPos = bullet.getPosition();
         var PersonPos = person.getPosition();
-        return ( ( Math.abs( bulletPos.x - PersonPos.x ) <= 50 ) && ( Math.abs( bulletPos.y - PersonPos.y ) <= 50 ) );
+        return ( ( Math.abs( bulletPos.x - PersonPos.x ) <= 30 ) && ( Math.abs( bulletPos.y - PersonPos.y ) <= 30 ) );
     }
 
 });
-
-Player.DIR = {
-    UP: 1,
-    RIGHT: 2,
-    DOWN: 3,
-    LEFT: 4
-};

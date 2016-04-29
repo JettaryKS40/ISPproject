@@ -36,6 +36,12 @@ var Enemy1 = cc.Sprite.extend({
 
     shooting: function() {
 
+    },
+
+    getHit: function( bullet , person ) {
+        var bulletPos = bullet.getPosition();
+        var PersonPos = person.getPosition();
+        return ( ( Math.abs( bulletPos.x - PersonPos.x ) <= 50 ) && ( Math.abs( bulletPos.y - PersonPos.y ) <= 50 ) );
     }
 
 });
