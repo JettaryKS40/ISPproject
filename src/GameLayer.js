@@ -42,6 +42,18 @@ var GameLayer = cc.LayerColor.extend({
         this.gameover.setString("HP: "+100);
         this.addChild( this.gameover );
 
+        this.salt = cc.LabelTTF.create( '0', 'Arial', 28 );
+        this.salt.setString("HP: "+100);
+        this.addChild( this.salt );
+
+        this.salt2 = cc.LabelTTF.create( '0', 'Arial', 28 );
+        this.salt2.setString("HP: "+100);
+        this.addChild( this.salt2 );
+
+        this.salt3 = cc.LabelTTF.create( '0', 'Arial', 28 );
+        this.salt3.setString("HP: "+100);
+        this.addChild( this.salt3 );
+
         this.score = 0;
         this.hp = 100;
         this.check = 0;
@@ -84,6 +96,15 @@ var GameLayer = cc.LayerColor.extend({
 
     update: function( dt ) {
             if( this.state == GameLayer.STATES.STARTED ) {
+
+                this.salt.setString( "อิอิ" );
+                this.salt2.setString( "u noob" );
+                this.salt3.setString( "bobo la" );
+
+                this.salt.setPosition( new cc.Point( this.enemy.getPositionX(), this.enemy.getPositionY() + 60 ) );
+                this.salt2.setPosition( new cc.Point( this.enemy2.getPositionX(), this.enemy2.getPositionY() + 60 ) );
+                this.salt3.setPosition( new cc.Point( this.enemy3.getPositionX(), this.enemy3.getPositionY() + 60 ) );
+
                 if( this.enemy.getPositionX() < 1024 ) {
                     if( this.enemy.randomChance() >= 99 )
                         this.enemyShot( this.enemy.getPositionX(), this.enemy.getPositionY() );
@@ -123,7 +144,7 @@ var GameLayer = cc.LayerColor.extend({
                   if( this.enemy.getHit ( this.enemyBullet1, this.player ) ) {
                       this.enemyBullet1.setPosition( new cc.Point( 999 , 999 ) );
                       this.removeChild( this.enemyBullet1 );
-                      this.hp--;
+                      this.hp-=5;
                       this.gameover.setString("HP: "+ this.hp);
                       if( this.hp <= 0){
                           this.player.setPosition( new cc.Point( -100, -100 ) );
@@ -135,7 +156,7 @@ var GameLayer = cc.LayerColor.extend({
                   if( this.enemy2.getHit ( this.enemyBullet2, this.player ) ) {
                       this.enemyBullet2.setPosition( new cc.Point( 999 , 999 ) );
                       this.removeChild( this.enemyBullet2 );
-                      this.hp--;
+                      this.hp-=6;
                       this.gameover.setString("HP: "+ this.hp);
                       if( this.hp <= 0){
                           this.player.setPosition( new cc.Point( -100, -100 ) );
@@ -148,7 +169,7 @@ var GameLayer = cc.LayerColor.extend({
                   if( this.enemy3.getHit ( this.enemyBullet3, this.player ) ) {
                       this.enemyBullet3.setPosition( new cc.Point( 999 , 999 ) );
                       this.removeChild( this.enemyBullet3 );
-                      this.hp--;
+                      this.hp-=3;
                       this.gameover.setString("HP: "+ this.hp);
                       if( this.hp <= 0){
                           this.player.setPosition( new cc.Point( -100, -100 ) );
