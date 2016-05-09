@@ -72,21 +72,16 @@ var GameLayer = cc.LayerColor.extend({
 
     onKeyDown: function( keyCode, event ) {
         this.player.move(keyCode) ;
+
         if( this.state == GameLayer.STATES.STARTED ) {
-              if ( keyCode == cc.KEY.e ) {
-                  console.log( "xpos: " + this.player.getPositionX() + " ypos: " + this.player.getPositionY() );
-              }
-
-              if ( keyCode == cc.KEY.q ) {
-                  console.log( "Check value = " + this.check );
-              }
-
-              if ( keyCode == cc.KEY.d ) {
+              if ( keyCode == cc.KEY.space ) {
                   if( this.countBullet == 0 )
                   this.shoot();
                   this.countBullet = 1;
                }
         }
+
+        if( keyCode == cc.KEY.r ) { this.resetGame(); }
 
     },
 
@@ -96,107 +91,137 @@ var GameLayer = cc.LayerColor.extend({
 
     update: function( dt ) {
             if( this.state == GameLayer.STATES.STARTED ) {
-
-                this.salt.setString( "อิอิ" );
-                this.salt2.setString( "u noob" );
-                this.salt3.setString( "bobo la" );
-
-                this.salt.setPosition( new cc.Point( this.enemy.getPositionX(), this.enemy.getPositionY() + 60 ) );
-                this.salt2.setPosition( new cc.Point( this.enemy2.getPositionX(), this.enemy2.getPositionY() + 60 ) );
-                this.salt3.setPosition( new cc.Point( this.enemy3.getPositionX(), this.enemy3.getPositionY() + 60 ) );
-
-                if( this.enemy.getPositionX() < 1024 ) {
-                    if( this.enemy.randomChance() >= 99 )
-                        this.enemyShot( this.enemy.getPositionX(), this.enemy.getPositionY() );
-                        this.enemy.randomChance();
-                  }
-
-                  if( this.enemy2.getPositionX() < 1024 ) {
-                      if( this.enemy2.randomChance() >= 99 )
-                      this.enemyShot2( this.enemy2.getPositionX(), this.enemy2.getPositionY() );
-                      this.enemy2.randomChance();
-                  }
-
-                  if( this.enemy3.getPositionX() < 1024 ) {
-                      if( this.enemy3.randomChance() >= 99 )
-                      this.enemyShot3( this.enemy3.getPositionX(), this.enemy3.getPositionY() );
-                      this.enemy3.randomChance();
-                  }
-
-                  if( this.player.hit ( this.playerBullet, this.enemy ) ) {
-                      this.enemy.randomPos();
-                      this.score++;
-                      this.scoreLabel.setString( "Score: "+this.score );
-                  }
-
-                  if( this.player.hit ( this.playerBullet, this.enemy2 ) ) {
-                      this.enemy2.randomPos();
-                      this.score++;
-                      this.scoreLabel.setString( "Score: "+this.score );
-                  }
-
-                  if( this.player.hit ( this.playerBullet, this.enemy3 ) ) {
-                      this.enemy3.randomPos();
-                      this.score++;
-                      this.scoreLabel.setString( "Score: "+this.score );
-                  }
-
-                  if( this.enemy.getHit ( this.enemyBullet1, this.player ) ) {
-                      this.enemyBullet1.setPosition( new cc.Point( 999 , 999 ) );
-                      this.removeChild( this.enemyBullet1 );
-                      this.hp-=5;
-                      this.gameover.setString("HP: "+ this.hp);
-                      if( this.hp <= 0){
-                          this.player.setPosition( new cc.Point( -100, -100 ) );
-                          this.gameover.setString("DEAD");
-                          this.state = GameLayer.STATES.DEAD;
-                      }
-                  }
-
-                  if( this.enemy2.getHit ( this.enemyBullet2, this.player ) ) {
-                      this.enemyBullet2.setPosition( new cc.Point( 999 , 999 ) );
-                      this.removeChild( this.enemyBullet2 );
-                      this.hp-=6;
-                      this.gameover.setString("HP: "+ this.hp);
-                      if( this.hp <= 0){
-                          this.player.setPosition( new cc.Point( -100, -100 ) );
-                          this.gameover.setString("DEAD");
-                          this.state = GameLayer.STATES.DEAD;
-                      }
-
-                  }
-
-                  if( this.enemy3.getHit ( this.enemyBullet3, this.player ) ) {
-                      this.enemyBullet3.setPosition( new cc.Point( 999 , 999 ) );
-                      this.removeChild( this.enemyBullet3 );
-                      this.hp-=3;
-                      this.gameover.setString("HP: "+ this.hp);
-                      if( this.hp <= 0){
-                          this.player.setPosition( new cc.Point( -100, -100 ) );
-                          this.gameover.setString("DEAD");
-                          this.state = GameLayer.STATES.DEAD;
-                      }
-
-                  }
-
+                  this.setupEnemy();
+                  this.startGame();
+                  this.checkingHit( this.enemy, this.enemyBullet1 );
+                  this.checkingHit( this.enemy2, this.enemyBullet2 );
+                  this.checkingHit( this.enemy3, this.enemyBullet3 );
 
                   if( this.countBullet == 1 )
                       if( this.playerBullet.getPositionX() > 1024 )
                           this.countBullet = 0;
+            }
 
+            if( this.state == GameLayer.STATES.DEAD ) {
+                  this.endGame();
+            }
+
+    },
+
+    checkingHit: function( target, checkBullet ) {
+        if( target.getHit ( checkBullet, this.player ) ) {
+            checkBullet.setPosition( new cc.Point( 999 , 999 ) );
+            this.removeChild( checkBullet );
+            this.hp-=4;
+            this.gameover.setString("HP: "+ this.hp);
+
+            if( this.hp <= 0){
+                this.player.setPosition( new cc.Point( -100, -100 ) );
+                this.gameover.setString("DEAD");
+                this.state = GameLayer.STATES.DEAD;
+
+              }
 
             }
+
+    },
+
+    setupEnemy: function() {
+        if( this.enemy.getPositionX() < 1024 ) {
+            if( this.enemy.randomChance() >= 99 )
+                this.enemyShot( this.enemy.getPositionX(), this.enemy.getPositionY() );
+                this.enemy.randomChance();
+
+              }
+
+            if( this.enemy2.getPositionX() < 1024 ) {
+                if( this.enemy2.randomChance() >= 99 )
+                this.enemyShot2( this.enemy2.getPositionX(), this.enemy2.getPositionY() );
+                this.enemy2.randomChance();
+
+              }
+
+            if( this.enemy3.getPositionX() < 1024 ) {
+                if( this.enemy3.randomChance() >= 99 )
+                this.enemyShot3( this.enemy3.getPositionX(), this.enemy3.getPositionY() );
+                this.enemy3.randomChance();
+
+              }
     },
 
     startGame: function() {
+        if( this.player.hit ( this.playerBullet, this.enemy ) ) {
+            this.killCount( this.enemy );
+        }
+
+        if( this.player.hit ( this.playerBullet, this.enemy2 ) ) {
+            this.killCount( this.enemy2 );
+        }
+
+        if( this.player.hit ( this.playerBullet, this.enemy3 ) ) {
+            this.killCount( this.enemy3 );
+        }
+
+    },
+
+    killCount: function( person ) {
+        person.randomPos();
+        this.score++;
+        this.scoreLabel.setString( "Score: "+this.score );
 
     },
 
     endGame: function() {
+        this.salt.setString( "อิอิ" );
+        this.salt2.setString( "u noob" );
+        this.salt3.setString( "bobo la" );
+        this.salt.setPosition( new cc.Point( this.enemy.getPositionX(), this.enemy.getPositionY() + 60 ) );
+        this.salt2.setPosition( new cc.Point( this.enemy2.getPositionX(), this.enemy2.getPositionY() + 60 ) );
+        this.salt3.setPosition( new cc.Point( this.enemy3.getPositionX(), this.enemy3.getPositionY() + 60 ) );
 
     },
 
     resetGame: function() {
+
+        this.removeAllChildren(true);
+
+        this.addChild( this.player, 1 );
+        this.addChild( this.enemy, 1 );
+        this.addChild( this.enemy2, 1 );
+        this.addChild( this.enemy3, 1 );
+        this.addChild( this.grassbg );
+        this.addChild( this.scoreLabel );
+        this.addChild( this.gameover );
+        this.addChild( this.salt );
+        this.addChild( this.salt2 );
+        this.addChild( this.salt3 );
+
+        this.player.scheduleUpdate();
+        this.enemy.scheduleUpdate();
+        this.enemy2.scheduleUpdate();
+        this.enemy3.scheduleUpdate();
+        this.addKeyboardHandlers();
+        this.scheduleUpdate();
+
+        this.state = GameLayer.STATES.STARTED;
+
+        this.player.setPosition( new cc.Point( 172, 330 ) );
+        this.enemy.randomPos();
+        this.enemy2.randomPos();
+        this.enemy3.randomPos();
+
+        this.hp = 100;
+        this.gameover.setString("HP: "+ this.hp);
+
+        this.score = 0;
+        this.scoreLabel.setString( "Score: "+this.score );
+
+        this.salt.setString( "" );
+        this.salt2.setString( "" );
+        this.salt3.setString( "" );
+        this.salt.setPosition( new cc.Point( this.enemy.getPositionX(), this.enemy.getPositionY() + 60 ) );
+        this.salt2.setPosition( new cc.Point( this.enemy2.getPositionX(), this.enemy2.getPositionY() + 60 ) );
+        this.salt3.setPosition( new cc.Point( this.enemy3.getPositionX(), this.enemy3.getPositionY() + 60 ) );
 
     },
 
