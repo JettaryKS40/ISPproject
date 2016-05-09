@@ -4,33 +4,65 @@ var GameLayer = cc.LayerColor.extend({
         this._super( new cc.Color( 127, 127, 127, 255 ) );
         this.setPosition( new cc.Point( 0, 0 ) );
 
+        this.mainPage = new MainMenu();
+        this.mainPage.setPosition( new cc.Point( screenWidth / 2, screenHeight / 2 ) );
+        this.addChild( this.mainPage, 1 );
+
         this.player = new Player();
-        this.player.setPosition( new cc.Point( 172, 330 ) );
-        this.addChild( this.player, 1 );
 
         this.enemy = new Enemy1();
         this.enemy.randomPos();
-        this.addChild( this.enemy, 1 );
+        this.addChild( this.enemy, 2 );
 
         this.enemy2 = new Enemy1();
         this.enemy2.randomPos();
-        this.addChild( this.enemy2, 1);
+        this.addChild( this.enemy2, 2 );
 
         this.enemy3 = new Enemy1();
         this.enemy3.randomPos();
-        this.addChild( this.enemy3, 1);
+        this.addChild( this.enemy3, 2 );
+
+        this.enemy4 = new Enemy1();
+        this.enemy4.setPosition( new cc.Point( 999, 999 ) );
+        this.addChild( this.enemy4, 2 );
+
+        this.enemy5 = new Enemy1();
+        this.enemy5.setPosition( new cc.Point( 999, 999 ) );
+        this.addChild( this.enemy5, 2 );
+
+        this.enemy6 = new Enemy1();
+        this.enemy6.setPosition( new cc.Point( 999, 999 ) );
+        this.addChild( this.enemy6, 2 );
+
+        this.firstaid = new FirstAidBox();
+        this.firstaid.setPosition( new cc.Point( 999, 999 ));
+        this.addChild( this.firstaid, 2 );
 
         this.playerBullet = new Bullet();
         this.enemyBullet1 = new EnemyBullet();
         this.enemyBullet2 = new EnemyBullet();
         this.enemyBullet3 = new EnemyBullet();
+        this.enemyBullet4 = new EnemyBullet();
+        this.enemyBullet5 = new EnemyBullet();
+        this.enemyBullet6 = new EnemyBullet();
 
+        this.ammoStack = 8;
+
+        this.checkPage = 0;
+
+        this.checkPhaseTwo = 0;
+        this.damageToPlayer = 4;
         this.countBullet = 0;
         this.countEnemyBullet = 0;
 
         this.grassbg = new Background();
         this.grassbg.setPosition( new cc.Point( screenWidth / 2, screenHeight / 2 ) );
         this.addChild( this.grassbg );
+
+        this.ammoCounter = cc.LabelTTF.create( '0', 'Arial', 30 );
+        this.ammoCounter.setPosition( new cc.Point( 890, 120 ) );
+        this.ammoCounter.setString( "Ammo: " + this.ammoStack + " /8" );
+        this.addChild( this.ammoCounter );
 
         this.scoreLabel = cc.LabelTTF.create( '0', 'Arial', 30 );
         this.scoreLabel.setPosition( new cc.Point( 890, 700 ) );
@@ -43,26 +75,38 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.gameover );
 
         this.salt = cc.LabelTTF.create( '0', 'Arial', 28 );
-        this.salt.setString("HP: "+100);
+        this.salt.setString("");
         this.addChild( this.salt );
 
         this.salt2 = cc.LabelTTF.create( '0', 'Arial', 28 );
-        this.salt2.setString("HP: "+100);
+        this.salt2.setString("");
         this.addChild( this.salt2 );
 
         this.salt3 = cc.LabelTTF.create( '0', 'Arial', 28 );
-        this.salt3.setString("HP: "+100);
+        this.salt3.setString("");
         this.addChild( this.salt3 );
 
+        this.salt4 = cc.LabelTTF.create( '0', 'Arial', 28 );
+        this.salt4.setString("");
+        this.addChild( this.salt4 );
+
+        this.salt5 = cc.LabelTTF.create( '0', 'Arial', 28 );
+        this.salt5.setString("");
+        this.addChild( this.salt5 );
+
+        this.salt6 = cc.LabelTTF.create( '0', 'Arial', 28 );
+        this.salt6.setString("");
+        this.addChild( this.salt6 );
+
+        this.hardMode = 0;
         this.score = 0;
         this.hp = 100;
         this.check = 0;
-        this.state = GameLayer.STATES.STARTED;
+        this.itemHPChance = 0;
+        this.healrate = 15;
+        this.state = GameLayer.STATES.INTRO;
 
-        this.player.scheduleUpdate();
-        this.enemy.scheduleUpdate();
-        this.enemy2.scheduleUpdate();
-        this.enemy3.scheduleUpdate();
+        this.mainPage.scheduleUpdate();
         this.addKeyboardHandlers();
         this.scheduleUpdate();
 
@@ -72,34 +116,106 @@ var GameLayer = cc.LayerColor.extend({
 
     onKeyDown: function( keyCode, event ) {
         this.player.move(keyCode) ;
+        // console.log( keyCode.toString() );
 
-        if( this.state == GameLayer.STATES.STARTED ) {
-              if ( keyCode == cc.KEY.space ) {
-                  if( this.countBullet == 0 )
-                  this.shoot();
-                  this.countBullet = 1;
-               }
+        if( this.state == GameLayer.STATES.INTRO ) {
+            if ( keyCode == 13 ) {
+                this.mainPage.receiveKey( keyCode );
+
+                if(this.mainPage.getStart() == 1){
+                    this.removeChild( this.mainPage, true );
+                    this.state = GameLayer.STATES.STARTED;
+                    this.player.setPosition( new cc.Point( 172, 330 ) );
+                    this.addChild( this.player, 2 );
+                }
+            }
         }
 
-        if( keyCode == cc.KEY.r ) { this.resetGame(); }
+
+        if( this.state == GameLayer.STATES.STARTED ) {
+
+              if ( this.ammoStack > 0 ) {
+                   if ( keyCode == cc.KEY.space ) {
+                        if( this.countBullet == 0 && this.ammoStack > 0 ) {
+                            this.shoot();
+                            this.countBullet = 1;
+                            this.ammoStack--;
+                            this.ammoCounter.setString( "Ammo: " + this.ammoStack + " /8" );
+                        }
+                  }
+              }
+
+
+              if( keyCode == cc.KEY.r ) {
+                  if( this.ammoStack == 1 ) {
+                      this.ammoStack = 9;
+                      this.ammoCounter.setString( "Ammo: " + this.ammoStack + " /8" );
+                  }
+
+                  if( this.ammoStack == 0 ) {
+                      this.ammoStack = 8;
+                      this.ammoCounter.setString( "Ammo: " + this.ammoStack + " /8" );
+                  }
+              }
+      }
+        if( keyCode == 8 ) { this.resetGame(); }
 
     },
 
     onKeyUp: function( keyCode, event ) {
         this.player.move(999);
+        this.mainPage.releaseKey(keyCode);
     },
 
     update: function( dt ) {
+
             if( this.state == GameLayer.STATES.STARTED ) {
                   this.setupEnemy();
                   this.startGame();
+
                   this.checkingHit( this.enemy, this.enemyBullet1 );
                   this.checkingHit( this.enemy2, this.enemyBullet2 );
                   this.checkingHit( this.enemy3, this.enemyBullet3 );
+                  this.checkingHit( this.enemy4, this.enemyBullet4 );
+                  this.checkingHit( this.enemy5, this.enemyBullet5 );
+                  this.checkingHit( this.enemy6, this.enemyBullet6 );
 
                   if( this.countBullet == 1 )
                       if( this.playerBullet.getPositionX() > 1024 )
                           this.countBullet = 0;
+
+                  if( this.itemHPChance >= 95 ) {
+                      this.itemHPChance = 0;
+                      this.firstaid.randomPos();
+                  }
+
+                  if ( this.firstaid.take( this.playerBullet ) ) {
+
+                       if( this.hp < 100 ) {
+                           this.hp += this.healrate;
+
+                           var checker = this.hp - 100;
+                           if( this.hp > 100 ) { this.hp -= checker; }
+                       }
+
+                       else if( this.hp >= 100 ) {
+                            this.hp += 0;
+                            this.score++;
+                            this.scoreLabel.setString( "Score: "+this.score );
+                       }
+
+                       this.firstaid.setPosition( new cc.Point( 999, 999 ));
+                       this.gameover.setString("HP: "+ this.hp);
+
+                  }
+
+                  if( this.score >= 100 ) {
+                      this.hardMode = 1;
+                      this.phase2();
+                      this.checkingHit( this.enemy4, this.enemyBullet4 );
+                      this.checkingHit( this.enemy5, this.enemyBullet5 );
+                      this.checkingHit( this.enemy6, this.enemyBullet6 );
+                  }
             }
 
             if( this.state == GameLayer.STATES.DEAD ) {
@@ -112,7 +228,7 @@ var GameLayer = cc.LayerColor.extend({
         if( target.getHit ( checkBullet, this.player ) ) {
             checkBullet.setPosition( new cc.Point( 999 , 999 ) );
             this.removeChild( checkBullet );
-            this.hp-=4;
+            this.hp -= this.damageToPlayer;
             this.gameover.setString("HP: "+ this.hp);
 
             if( this.hp <= 0){
@@ -127,26 +243,74 @@ var GameLayer = cc.LayerColor.extend({
     },
 
     setupEnemy: function() {
+
+        this.player.scheduleUpdate();
+        this.enemy.scheduleUpdate();
+        this.enemy2.scheduleUpdate();
+        this.enemy3.scheduleUpdate();
+
         if( this.enemy.getPositionX() < 1024 ) {
             if( this.enemy.randomChance() >= 99 )
                 this.enemyShot( this.enemy.getPositionX(), this.enemy.getPositionY() );
                 this.enemy.randomChance();
 
-              }
+            }
 
-            if( this.enemy2.getPositionX() < 1024 ) {
-                if( this.enemy2.randomChance() >= 99 )
+        if( this.enemy2.getPositionX() < 1024 ) {
+            if( this.enemy2.randomChance() >= 99 )
                 this.enemyShot2( this.enemy2.getPositionX(), this.enemy2.getPositionY() );
                 this.enemy2.randomChance();
 
-              }
+            }
 
-            if( this.enemy3.getPositionX() < 1024 ) {
-                if( this.enemy3.randomChance() >= 99 )
+        if( this.enemy3.getPositionX() < 1024 ) {
+            if( this.enemy3.randomChance() >= 99 )
                 this.enemyShot3( this.enemy3.getPositionX(), this.enemy3.getPositionY() );
                 this.enemy3.randomChance();
 
-              }
+            }
+    },
+
+    phase2: function() {
+
+        if( this.hardMode == 1 ) {
+            this.damageToPlayer = 8;
+            this.healrate = 25;
+
+            this.grassbg.initWithFile( 'res/images/grassbgRED.jpg' );
+            this.enemy4.scheduleUpdate();
+            this.enemy5.scheduleUpdate();
+            this.enemy6.scheduleUpdate();
+
+            if( this.checkPhaseTwo = 0 ) {
+              this.enemy4.randomPos();
+              this.enemy5.randomPos();
+              this.enemy6.randomPos();
+              this.resetScreen();
+              this.checkPhaseTwo = 1;
+            }
+
+            if( this.enemy4.getPositionX() < 1024 ) {
+                if( this.enemy4.randomChance() >= 90 )
+                    this.enemyShot( this.enemy4.getPositionX(), this.enemy4.getPositionY() );
+                    this.enemy4.randomChance();
+
+            }
+
+            if( this.enemy5.getPositionX() < 1024 ) {
+                if( this.enemy5.randomChance() >= 95 )
+                    this.enemyShot2( this.enemy5.getPositionX(), this.enemy5.getPositionY() );
+                    this.enemy5.randomChance();
+
+            }
+
+            if( this.enemy6.getPositionX() < 1024 ) {
+                if( this.enemy6.randomChance() >= 93 )
+                    this.enemyShot3( this.enemy6.getPositionX(), this.enemy6.getPositionY() );
+                    this.enemy6.randomChance();
+
+            }
+        }
     },
 
     startGame: function() {
@@ -162,26 +326,47 @@ var GameLayer = cc.LayerColor.extend({
             this.killCount( this.enemy3 );
         }
 
+        if( this.player.hit ( this.playerBullet, this.enemy4 ) ) {
+            this.killCount( this.enemy4 );
+        }
+
+        if( this.player.hit ( this.playerBullet, this.enemy5 ) ) {
+            this.killCount( this.enemy5 );
+        }
+
+        if( this.player.hit ( this.playerBullet, this.enemy6 ) ) {
+            this.killCount( this.enemy6 );
+        }
+
     },
 
     killCount: function( person ) {
         person.randomPos();
         this.score++;
         this.scoreLabel.setString( "Score: "+this.score );
+        this.itemHPChance = this.firstaid.randomChance();
 
     },
 
     endGame: function() {
+        this.grassbg.initWithFile( 'res/images/grassbgRED.jpg' );
+
         this.salt.setString( "อิอิ" );
         this.salt2.setString( "u noob" );
         this.salt3.setString( "bobo la" );
+        this.salt4.setString( "#REKT" );
+        this.salt5.setString( "まだまだ。。" );
+        this.salt6.setString( "อ่อนแอ" );
+
         this.salt.setPosition( new cc.Point( this.enemy.getPositionX(), this.enemy.getPositionY() + 60 ) );
         this.salt2.setPosition( new cc.Point( this.enemy2.getPositionX(), this.enemy2.getPositionY() + 60 ) );
         this.salt3.setPosition( new cc.Point( this.enemy3.getPositionX(), this.enemy3.getPositionY() + 60 ) );
+        this.salt4.setPosition( new cc.Point( this.enemy4.getPositionX(), this.enemy4.getPositionY() + 60 ) );
+        this.salt5.setPosition( new cc.Point( this.enemy5.getPositionX(), this.enemy5.getPositionY() + 60 ) );
+        this.salt6.setPosition( new cc.Point( this.enemy6.getPositionX(), this.enemy6.getPositionY() + 60 ) );
 
     },
-
-    resetGame: function() {
+    resetScreen: function() {
 
         this.removeAllChildren(true);
 
@@ -189,20 +374,38 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.enemy, 1 );
         this.addChild( this.enemy2, 1 );
         this.addChild( this.enemy3, 1 );
+        this.addChild( this.enemy4, 1 );
+        this.addChild( this.enemy5, 1 );
+        this.addChild( this.enemy6, 1 );
+        this.addChild( this.firstaid, 1 );
         this.addChild( this.grassbg );
         this.addChild( this.scoreLabel );
         this.addChild( this.gameover );
+        this.addChild( this.ammoCounter );
         this.addChild( this.salt );
         this.addChild( this.salt2 );
         this.addChild( this.salt3 );
+        this.addChild( this.salt4 );
+        this.addChild( this.salt5 );
+        this.addChild( this.salt6 );
 
         this.player.scheduleUpdate();
         this.enemy.scheduleUpdate();
         this.enemy2.scheduleUpdate();
         this.enemy3.scheduleUpdate();
+
         this.addKeyboardHandlers();
         this.scheduleUpdate();
 
+    },
+
+    resetGame: function() {
+
+        this.resetScreen();
+        this.grassbg.initWithFile( 'res/images/grassbg.jpg' );
+
+        this.checkPhaseTwo = 0;
+        this.hardMode = 0;
         this.state = GameLayer.STATES.STARTED;
 
         this.player.setPosition( new cc.Point( 172, 330 ) );
@@ -210,6 +413,12 @@ var GameLayer = cc.LayerColor.extend({
         this.enemy2.randomPos();
         this.enemy3.randomPos();
 
+        this.enemy4.setPosition( new cc.Point( 999, 999 ) );
+        this.enemy5.setPosition( new cc.Point( 999, 999 ) );
+        this.enemy6.setPosition( new cc.Point( 999, 999 ) );
+
+        this.damageToPlayer = 4;
+        this.healrate = 15;
         this.hp = 100;
         this.gameover.setString("HP: "+ this.hp);
 
@@ -219,9 +428,9 @@ var GameLayer = cc.LayerColor.extend({
         this.salt.setString( "" );
         this.salt2.setString( "" );
         this.salt3.setString( "" );
-        this.salt.setPosition( new cc.Point( this.enemy.getPositionX(), this.enemy.getPositionY() + 60 ) );
-        this.salt2.setPosition( new cc.Point( this.enemy2.getPositionX(), this.enemy2.getPositionY() + 60 ) );
-        this.salt3.setPosition( new cc.Point( this.enemy3.getPositionX(), this.enemy3.getPositionY() + 60 ) );
+        this.salt4.setString( "" );
+        this.salt5.setString( "" );
+        this.salt6.setString( "" );
 
     },
 
@@ -274,6 +483,42 @@ var GameLayer = cc.LayerColor.extend({
             this.removeChild( this.enemyBullet3 );
     },
 
+    enemyShot4: function(x,y) {
+
+        this.enemyBullet4 = new EnemyBullet();
+        this.enemyBullet4.setPosition( new cc.Point( x , y ) );
+        this.addChild( this.enemyBullet4 );
+        this.enemyBullet4.scheduleUpdate();
+        this.enemyBullet4.enemyShoot();
+
+        if( this.enemyBullet4.getPositionX() < 0 )
+            this.removeChild( this.enemyBullet4 );
+    },
+
+    enemyShot5: function(x,y) {
+
+        this.enemyBullet5 = new EnemyBullet();
+        this.enemyBullet5.setPosition( new cc.Point( x , y ) );
+        this.addChild( this.enemyBullet5 );
+        this.enemyBullet5.scheduleUpdate();
+        this.enemyBullet5.enemyShoot();
+
+        if( this.enemyBullet5.getPositionX() < 0 )
+            this.removeChild( this.enemyBullet5 );
+    },
+
+    enemyShot6: function(x,y) {
+
+        this.enemyBullet6 = new EnemyBullet();
+        this.enemyBullet6.setPosition( new cc.Point( x , y ) );
+        this.addChild( this.enemyBullet6 );
+        this.enemyBullet6.scheduleUpdate();
+        this.enemyBullet6.enemyShoot();
+
+        if( this.enemyBullet6.getPositionX() < 0 )
+            this.removeChild( this.enemyBullet6 );
+    },
+
     addKeyboardHandlers: function() {
         var self = this;
         cc.eventManager.addListener({
@@ -303,6 +548,7 @@ var StartScene = cc.Scene.extend({
 });
 
 GameLayer.STATES = {
+    INTRO: 0,
     STARTED: 1,
     DEAD: 2
 

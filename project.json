@@ -20,7 +20,9 @@
         "src/Player.js",
         "src/Bullet.js",
         "src/EnemyBullet.js",
-        "src/Cover.js"
+        "src/Cover.js",
+        "src/MainMenu.js",
+        "src/FirstAidBox.js"
 
     ]
 }
