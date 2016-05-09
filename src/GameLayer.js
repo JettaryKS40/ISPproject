@@ -99,12 +99,17 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.salt6 );
 
         this.hardMode = 0;
-        this.score = 0;
+        this.score = 099;
         this.hp = 100;
-        this.check = 0;
+        this.check = 0 ;
         this.itemHPChance = 0;
         this.healrate = 15;
         this.state = GameLayer.STATES.INTRO;
+
+        this.checkSongBoss = 0;
+        this.checkSongEnd = 0;
+
+        cc.audioEngine.playMusic( 'res/sound/song.mp3', true );
 
         this.mainPage.scheduleUpdate();
         this.addKeyboardHandlers();
@@ -133,13 +138,18 @@ var GameLayer = cc.LayerColor.extend({
 
 
         if( this.state == GameLayer.STATES.STARTED ) {
-
               if ( this.ammoStack > 0 ) {
                    if ( keyCode == cc.KEY.space ) {
                         if( this.countBullet == 0 && this.ammoStack > 0 ) {
                             this.shoot();
                             this.countBullet = 1;
+                            cc.audioEngine.playEffect( 'res/sound/fireM1.mp3', false);
                             this.ammoStack--;
+
+                            if( this.ammoStack == 0 ) {
+                                cc.audioEngine.playEffect( 'res/sound/lastM1.mp3', false);
+                            }
+
                             this.ammoCounter.setString( "Ammo: " + this.ammoStack + " /8" );
                         }
                   }
@@ -148,17 +158,23 @@ var GameLayer = cc.LayerColor.extend({
 
               if( keyCode == cc.KEY.r ) {
                   if( this.ammoStack == 1 ) {
+                      cc.audioEngine.playEffect( 'res/sound/m1ping.mp3', false);
                       this.ammoStack = 9;
                       this.ammoCounter.setString( "Ammo: " + this.ammoStack + " /8" );
+                      cc.audioEngine.playEffect( 'res/sound/reload.mp3', false);
                   }
 
                   if( this.ammoStack == 0 ) {
+                      cc.audioEngine.playEffect( 'res/sound/reload.mp3', false);
                       this.ammoStack = 8;
                       this.ammoCounter.setString( "Ammo: " + this.ammoStack + " /8" );
                   }
               }
       }
-        if( keyCode == 8 ) { this.resetGame(); }
+        if( keyCode == 8 ) {
+          cc.audioEngine.playMusic( 'res/sound/song.mp3', true );
+          this.resetGame();
+        }
 
     },
 
@@ -184,13 +200,14 @@ var GameLayer = cc.LayerColor.extend({
                       if( this.playerBullet.getPositionX() > 1024 )
                           this.countBullet = 0;
 
+
                   if( this.itemHPChance >= 95 ) {
                       this.itemHPChance = 0;
                       this.firstaid.randomPos();
                   }
 
                   if ( this.firstaid.take( this.playerBullet ) ) {
-
+                       cc.audioEngine.playEffect( 'res/sound/ding.wav', false);
                        if( this.hp < 100 ) {
                            this.hp += this.healrate;
 
@@ -210,6 +227,7 @@ var GameLayer = cc.LayerColor.extend({
                   }
 
                   if( this.score >= 100 ) {
+
                       this.hardMode = 1;
                       this.phase2();
                       this.checkingHit( this.enemy4, this.enemyBullet4 );
@@ -277,17 +295,27 @@ var GameLayer = cc.LayerColor.extend({
             this.damageToPlayer = 8;
             this.healrate = 25;
 
+            if( this.checkSongBoss == 0 ) {
+                cc.audioEngine.playEffect( 'res/sound/mlg/AIRPORN.mp3', false);
+                cc.audioEngine.playEffect( 'res/sound/mlg/OMG.mp3', false);
+                cc.audioEngine.playEffect( 'res/sound/mlg/sickReaction.mp3', false);
+                this.enemy4.randomPos();
+                this.enemy5.randomPos();
+                this.enemy6.randomPos();
+                this.checkSongBoss = 1;
+            }
+
             this.grassbg.initWithFile( 'res/images/grassbgRED.jpg' );
             this.enemy4.scheduleUpdate();
             this.enemy5.scheduleUpdate();
             this.enemy6.scheduleUpdate();
 
+
+
             if( this.checkPhaseTwo = 0 ) {
-              this.enemy4.randomPos();
-              this.enemy5.randomPos();
-              this.enemy6.randomPos();
               this.resetScreen();
               this.checkPhaseTwo = 1;
+
             }
 
             if( this.enemy4.getPositionX() < 1024 ) {
@@ -314,6 +342,7 @@ var GameLayer = cc.LayerColor.extend({
     },
 
     startGame: function() {
+
         if( this.player.hit ( this.playerBullet, this.enemy ) ) {
             this.killCount( this.enemy );
         }
@@ -341,6 +370,7 @@ var GameLayer = cc.LayerColor.extend({
     },
 
     killCount: function( person ) {
+      cc.audioEngine.playEffect( 'res/sound/hit.wav', false);
         person.randomPos();
         this.score++;
         this.scoreLabel.setString( "Score: "+this.score );
@@ -350,6 +380,14 @@ var GameLayer = cc.LayerColor.extend({
 
     endGame: function() {
         this.grassbg.initWithFile( 'res/images/grassbgRED.jpg' );
+
+        if(this.checkSongEnd == 0) {
+           cc.audioEngine.stopMusic();
+           cc.audioEngine.playEffect( 'res/sound/end/sad.mp3', false);
+           cc.audioEngine.playEffect( 'res/sound/end/onlytime.wav', false);
+           cc.audioEngine.playEffect( 'res/sound/end/sadviolin.wav', false);
+           this.checkSongEnd = 1;
+        }
 
         this.salt.setString( "อิอิ" );
         this.salt2.setString( "u noob" );
@@ -417,6 +455,9 @@ var GameLayer = cc.LayerColor.extend({
         this.enemy5.setPosition( new cc.Point( 999, 999 ) );
         this.enemy6.setPosition( new cc.Point( 999, 999 ) );
 
+        this.checkSongBoss = 0;
+        this.checkSongEnd = 0;
+
         this.damageToPlayer = 4;
         this.healrate = 15;
         this.hp = 100;
@@ -454,6 +495,7 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.enemyBullet1 );
         this.enemyBullet1.scheduleUpdate();
         this.enemyBullet1.enemyShoot();
+        cc.audioEngine.playEffect( 'res/sound/deag.wav', false);
 
         if( this.enemyBullet1.getPositionX() < 0 )
             this.removeChild( this.enemyBullet1 );
@@ -466,6 +508,7 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.enemyBullet2 );
         this.enemyBullet2.scheduleUpdate();
         this.enemyBullet2.enemyShoot();
+        cc.audioEngine.playEffect( 'res/sound/deag.wav', false);
 
         if( this.enemyBullet2.getPositionX() < 0 )
             this.removeChild( this.enemyBullet2 );
@@ -478,6 +521,7 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.enemyBullet3 );
         this.enemyBullet3.scheduleUpdate();
         this.enemyBullet3.enemyShoot();
+        cc.audioEngine.playEffect( 'res/sound/deag.wav', false);
 
         if( this.enemyBullet3.getPositionX() < 0 )
             this.removeChild( this.enemyBullet3 );
@@ -490,6 +534,7 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.enemyBullet4 );
         this.enemyBullet4.scheduleUpdate();
         this.enemyBullet4.enemyShoot();
+        cc.audioEngine.playEffect( 'res/sound/deag.wav', false);
 
         if( this.enemyBullet4.getPositionX() < 0 )
             this.removeChild( this.enemyBullet4 );
@@ -502,6 +547,7 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.enemyBullet5 );
         this.enemyBullet5.scheduleUpdate();
         this.enemyBullet5.enemyShoot();
+        cc.audioEngine.playEffect( 'res/sound/deag.wav', false);
 
         if( this.enemyBullet5.getPositionX() < 0 )
             this.removeChild( this.enemyBullet5 );
@@ -514,6 +560,7 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.enemyBullet6 );
         this.enemyBullet6.scheduleUpdate();
         this.enemyBullet6.enemyShoot();
+        cc.audioEngine.playEffect( 'res/sound/deag.wav', false);
 
         if( this.enemyBullet6.getPositionX() < 0 )
             this.removeChild( this.enemyBullet6 );
