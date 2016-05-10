@@ -99,7 +99,7 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.salt6 );
 
         this.hardMode = 0;
-        this.score = 099;
+        this.score = 0;
         this.hp = 100;
         this.check = 0 ;
         this.itemHPChance = 0;
