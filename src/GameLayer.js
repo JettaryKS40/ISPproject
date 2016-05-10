@@ -94,6 +94,13 @@ var GameLayer = cc.LayerColor.extend({
         this.salt5.setString("");
         this.addChild( this.salt5 );
 
+
+        this.getStartGame = cc.LabelTTF.create( '0', 'Arial', 28 );
+        this.getStartGame.setPosition( new cc.Point( 1024/2, 768/2 ));
+        this.getStartGame.setString( "" );
+        this.addChild( this.getStartGame );
+
+
         this.salt6 = cc.LabelTTF.create( '0', 'Arial', 28 );
         this.salt6.setString("");
         this.addChild( this.salt6 );
@@ -127,12 +134,16 @@ var GameLayer = cc.LayerColor.extend({
             if ( keyCode == 13 ) {
                 this.mainPage.receiveKey( keyCode );
 
-                if(this.mainPage.getStart() == 1){
-                    this.removeChild( this.mainPage, true );
-                    this.state = GameLayer.STATES.STARTED;
-                    this.player.setPosition( new cc.Point( 172, 330 ) );
-                    this.addChild( this.player, 2 );
-                }
+            }
+
+            if(this.mainPage.getStart() == 1){
+                this.removeChild( this.mainPage, true );
+                this.state = GameLayer.STATES.STARTED;
+                this.player.setPosition( new cc.Point( 172, 330 ) );
+                this.addChild( this.player, 2 );
+                this.getStartGame.setPosition( new cc.Point( 1024/2, 768/2 ));
+                this.getStartGame.setString( "Press Enter to start" );
+
             }
         }
 
@@ -185,7 +196,20 @@ var GameLayer = cc.LayerColor.extend({
 
     update: function( dt ) {
 
+            if( this.state == GameLayer.STATES.INTRO ) {
+
+                if(this.mainPage.getStart() == 1){
+
+                   this.getStartGame.setPosition( new cc.Point( 1024/2, 768/2 ));
+                   this.getStartGame.setString( "Press Enter to start" );
+
+                }
+
+                else {  this.getStartGame.setString( "" ); }
+            }
+
             if( this.state == GameLayer.STATES.STARTED ) {
+                  this.getStartGame.setString( "" );
                   this.setupEnemy();
                   this.startGame();
 
