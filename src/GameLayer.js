@@ -106,7 +106,7 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.salt6 );
 
         this.hardMode = 0;
-        this.score = 0;
+        this.score = 90;
         this.hp = 100;
         this.check = 0 ;
         this.itemHPChance = 0;
@@ -140,7 +140,7 @@ var GameLayer = cc.LayerColor.extend({
                 this.removeChild( this.mainPage, true );
                 this.state = GameLayer.STATES.STARTED;
                 this.player.setPosition( new cc.Point( 172, 330 ) );
-                this.addChild( this.player, 2 );
+                this.addChild( this.player, 1 );
                 this.getStartGame.setPosition( new cc.Point( 1024/2, 768/2 ));
                 this.getStartGame.setString( "Press Enter to start" );
 
@@ -461,10 +461,16 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.salt5 );
         this.addChild( this.salt6 );
 
+
         this.player.scheduleUpdate();
         this.enemy.scheduleUpdate();
         this.enemy2.scheduleUpdate();
         this.enemy3.scheduleUpdate();
+
+        this.addChild( this.playerBullet );
+        this.playerBullet.scheduleUpdate();
+
+        this.state = GameLayer.STATES.STARTED;
 
         this.addKeyboardHandlers();
         this.scheduleUpdate();
