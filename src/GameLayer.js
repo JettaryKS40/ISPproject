@@ -230,6 +230,13 @@ var GameLayer = cc.LayerColor.extend({
                       this.firstaid.randomPos();
                   }
 
+                  if( this.hardMode == 1 ) {
+                      if( this.itemHPChance >= 85 ) {
+                          this.itemHPChance = 0;
+                          this.firstaid.randomPos();
+                      }
+                  }
+
                   if ( this.firstaid.take( this.playerBullet ) ) {
                        cc.audioEngine.playEffect( 'res/sound/ding.wav', false);
                        if( this.hp < 100 ) {
@@ -316,13 +323,16 @@ var GameLayer = cc.LayerColor.extend({
     phase2: function() {
 
         if( this.hardMode == 1 ) {
-            this.damageToPlayer = 8;
+            this.damageToPlayer = 6;
             this.healrate = 25;
 
             if( this.checkSongBoss == 0 ) {
                 cc.audioEngine.playEffect( 'res/sound/mlg/AIRPORN.mp3', false);
                 cc.audioEngine.playEffect( 'res/sound/mlg/OMG.mp3', false);
                 cc.audioEngine.playEffect( 'res/sound/mlg/sickReaction.mp3', false);
+
+                this.resetScreen();
+
                 this.enemy4.randomPos();
                 this.enemy5.randomPos();
                 this.enemy6.randomPos();
@@ -343,21 +353,21 @@ var GameLayer = cc.LayerColor.extend({
             }
 
             if( this.enemy4.getPositionX() < 1024 ) {
-                if( this.enemy4.randomChance() >= 90 )
+                if( this.enemy4.randomChance() >= 96 )
                     this.enemyShot( this.enemy4.getPositionX(), this.enemy4.getPositionY() );
                     this.enemy4.randomChance();
 
             }
 
             if( this.enemy5.getPositionX() < 1024 ) {
-                if( this.enemy5.randomChance() >= 95 )
+                if( this.enemy5.randomChance() >= 96 )
                     this.enemyShot2( this.enemy5.getPositionX(), this.enemy5.getPositionY() );
                     this.enemy5.randomChance();
 
             }
 
             if( this.enemy6.getPositionX() < 1024 ) {
-                if( this.enemy6.randomChance() >= 93 )
+                if( this.enemy6.randomChance() >= 97 )
                     this.enemyShot3( this.enemy6.getPositionX(), this.enemy6.getPositionY() );
                     this.enemy6.randomChance();
 

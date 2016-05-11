@@ -13,7 +13,7 @@ var Enemy1 = cc.Sprite.extend({
     },
 
     randomSpeed: function() {
-        return this.speed = Math.random()*(6-3) + 3;
+        return this.speed = Math.random()*(6-4) + 4;
     },
 
     randomChance: function() {
@@ -26,15 +26,11 @@ var Enemy1 = cc.Sprite.extend({
     },
 
     walking: function( status ) {
-      this.setPositionX( this.getPositionX() - this.speed );
-      if( this.getPositionX() < -30 ){
-          this.randomPos();
-          this.randomSpeed();
-      }
-
-    },
-
-    shooting: function() {
+        this.setPositionX( this.getPositionX() - this.speed );
+        if( this.getPositionX() < -30 ){
+            this.randomPos();
+            this.randomSpeed();
+        }
 
     },
 
