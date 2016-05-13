@@ -106,7 +106,7 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.salt6 );
 
         this.hardMode = 0;
-        this.score = 90;
+        this.score = 0;
         this.hp = 100;
         this.check = 0 ;
         this.itemHPChance = 0;
@@ -531,7 +531,7 @@ var GameLayer = cc.LayerColor.extend({
     enemyShot: function(x,y) {
 
         this.enemyBullet1 = new EnemyBullet();
-        this.enemyBullet1.setPosition( new cc.Point( x , y ) );
+        this.enemyBullet1.setPosition( new cc.Point( x-10 , y+20 ) );
         this.addChild( this.enemyBullet1 );
         this.enemyBullet1.scheduleUpdate();
         this.enemyBullet1.enemyShoot();
@@ -544,7 +544,7 @@ var GameLayer = cc.LayerColor.extend({
     enemyShot2: function(x,y) {
 
         this.enemyBullet2 = new EnemyBullet();
-        this.enemyBullet2.setPosition( new cc.Point( x , y ) );
+        this.enemyBullet2.setPosition( new cc.Point( x-10 , y+20 ) );
         this.addChild( this.enemyBullet2 );
         this.enemyBullet2.scheduleUpdate();
         this.enemyBullet2.enemyShoot();
@@ -557,7 +557,7 @@ var GameLayer = cc.LayerColor.extend({
     enemyShot3: function(x,y) {
 
         this.enemyBullet3 = new EnemyBullet();
-        this.enemyBullet3.setPosition( new cc.Point( x , y ) );
+        this.enemyBullet3.setPosition( new cc.Point( x-10 , y+20 ) );
         this.addChild( this.enemyBullet3 );
         this.enemyBullet3.scheduleUpdate();
         this.enemyBullet3.enemyShoot();
@@ -570,7 +570,7 @@ var GameLayer = cc.LayerColor.extend({
     enemyShot4: function(x,y) {
 
         this.enemyBullet4 = new EnemyBullet();
-        this.enemyBullet4.setPosition( new cc.Point( x , y ) );
+        this.enemyBullet4.setPosition( new cc.Point( x-10 , y+20 ) );
         this.addChild( this.enemyBullet4 );
         this.enemyBullet4.scheduleUpdate();
         this.enemyBullet4.enemyShoot();
@@ -583,7 +583,7 @@ var GameLayer = cc.LayerColor.extend({
     enemyShot5: function(x,y) {
 
         this.enemyBullet5 = new EnemyBullet();
-        this.enemyBullet5.setPosition( new cc.Point( x , y ) );
+        this.enemyBullet5.setPosition( new cc.Point( x-10 , y+20 ) );
         this.addChild( this.enemyBullet5 );
         this.enemyBullet5.scheduleUpdate();
         this.enemyBullet5.enemyShoot();
@@ -596,7 +596,7 @@ var GameLayer = cc.LayerColor.extend({
     enemyShot6: function(x,y) {
 
         this.enemyBullet6 = new EnemyBullet();
-        this.enemyBullet6.setPosition( new cc.Point( x , y ) );
+        this.enemyBullet6.setPosition( new cc.Point( x-10 , y+20 ) );
         this.addChild( this.enemyBullet6 );
         this.enemyBullet6.scheduleUpdate();
         this.enemyBullet6.enemyShoot();
