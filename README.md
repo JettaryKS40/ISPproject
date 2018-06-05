@@ -7,10 +7,10 @@
 1. Open CMD
 2. Go through the game folder directory
 3. Execute python command
-* <if using python 2.7>
-  python -m SimpleHTTPServer
-* <if using python 3+>
-  python -m http.server
+* [if using python 2.7]  
+    python -m SimpleHTTPServer
+* [if using python 3+]  
+    python -m http.server
   
 4. Go to localhost:8000 on any web browser
 5. Play
